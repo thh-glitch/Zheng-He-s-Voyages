@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>歷史航跡：鄭和下西洋</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Custom Styles / Tailwind Config -->
+    <style>
+        /* 定義代碼中用到的自定義動畫 Keyframes */
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+        
+        /* 實用類 */
+        .animate-fade-in {
+            animation: fade-in 0.8s ease-out forwards;
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+        /* 隱藏滾動條但保持功能 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #475569;
+            border-radius: 4px;
+        }
+        
+        /* 確保 SVG 地圖響應式 */
+        svg {
+            display: block;
+        }
+    </style>
+    
+    <!-- Tailwind 擴充配置 (為了支援任意值動畫) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'dash': 'dash 20s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <div id="root"></div>
+
+    <!-- React Application Logic -->
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18.2.0';
+        import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
+        import { Ship, Map as MapIcon, Scroll, Anchor, Package, Milestone, Info, Globe, ChevronRight, X, Users, Compass, Shield, Scale, BookOpen, Coins, Landmark } from 'https://esm.sh/lucide-react@0.263.1';
+        import * as d3 from 'https://esm.sh/d3@7.8.5';
+
+        const ZhengHeApp = () => {
+          const [activeTab, setActiveTab] = useState('reasons');
+          const [selectedLocation, setSelectedLocation] = useState(null);
+          const [selectedImpact, setSelectedImpact] = useState(null);
+          const [geoData, setGeoData] = useState(null);
+          const mapRef = useRef(null);
+
+          // 加載真實地理數據 (GeoJSON)
+          useEffect(() => {
+            // 使用一個簡化的世界地圖 GeoJSON，聚焦於亞非區域
+            d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+              .then(data => {
+                setGeoData(data);
+              })
+              .catch(err => console.error("Error loading GeoJSON:", err));
+          }, []);
+
+          // 導航選項
+          const tabs = [
+            { id: 'reasons', label: '下西洋動機', icon: <Scroll size={20} /> },
+            { id: 'fleet', label: '無敵艦隊', icon: <Ship size={20} /> },
+            { id: 'map', label: '航程與交流', icon: <MapIcon size={20} /> },
+            { id: 'impact', label: '歷史影響', icon: <Globe size={20} /> },
+          ];
+
+          // 動機數據
+          const reasons = [
+            {
+              title: "宣揚國威",
+              desc: "明朝初年國力強盛，成祖朱棣希望通過展示強大的海軍力量，讓海外諸國臣服，建立「萬國來朝」的盛世局面。",
+              icon: <Anchor className="text-blue-400" size={32} />
+            },
+            {
+              title: "發展貿易",
+              desc: "推行朝貢貿易，用中國的絲綢、瓷器換取海外的香料、寶石與奇珍異獸，滿足宮廷與貴族需求，並活躍經濟。",
+              icon: <Package className="text-amber-400" size={32} />
+            },
+            {
+              title: "尋找建文帝",
+              desc: "靖難之變後，建文帝下落不明。有傳言他流亡海外，鄭和此行亦有秘密尋訪其下落的政治目的。",
+              icon: <Info className="text-red-400" size={32} />
+            }
+          ];
+
+          // 船隊數據
+          const fleetInfo = {
+            stats: [
+              { label: "船隻總數", value: "240+", unit: "艘", icon: <Ship className="text-amber-400" /> },
+              { label: "隨行人員", value: "27,800", unit: "人", icon: <Users className="text-blue-400" /> },
+              { label: "航行里程", value: "10萬+", unit: "里", icon: <Compass className="text-emerald-400" /> },
+            ],
+            ships: [
+              { name: "寶船 (旗艦)", role: "指揮帥船", size: "長44丈(約130m)，九桅十二帆", desc: "艦隊核心，極盡奢華，儲存賞賜用的寶物與詔書。" },
+              { name: "馬船", role: "綜合運輸", size: "長37丈，八桅", desc: "運載馬匹、建築材料與外交貢品，兼具戰鬥能力。" },
+              { name: "糧船", role: "後勤補給", size: "長28丈，七桅", desc: "裝載糧食與副食品，保障數萬人長達數月的海上生活。" },
+              { name: "坐船/戰船", role: "護航戰鬥", size: "長24丈/18丈", desc: "配備火炮與精銳士兵，負責艦隊防衛與打擊海盜。" }
+            ],
+            tech: [
+              { title: "水密隔艙", desc: "將船體內部隔成多個獨立空間，即使一艙漏水也不會導致全船沉沒，此技術比西方早數百年。" },
+              { title: "過洋牽星術", desc: "結合羅盤（指南針）與觀測星象的導航技術，能在茫茫大海上精準定位。" }
+            ],
+            comparison: [
+              { label: "首航時間", zheng: "1405年 (早87年)", west: "1492年 (哥倫布)", highlight: true },
+              { label: "旗艦長度", zheng: "約 120-130 米", west: "約 19-25 米 (聖瑪利亞號)", highlight: true },
+              { label: "旗艦載重", zheng: "約 2000-3000 噸", west: "約 100 噸", highlight: false },
+              { label: "船隊規模", zheng: "200 多艘", west: "3 艘", highlight: true },
+              { label: "人員數量", zheng: "2.7 萬人", west: "約 90 人", highlight: false }
+            ]
+          };
+
+          // 地點數據 - 使用真實經緯度 [lon, lat]
+          const locations = [
+            {
+              id: 1,
+              name: "南京/劉家港",
+              coordinates: [118.7969, 32.0603],
+              type: "start",
+              event: "1405年，鄭和率領兩萬七千多人，兩百多艘船隻首次從此出發。",
+              exchange: { out: ["絲綢", "瓷器", "茶葉"], in: ["無（出發地）"] }
+            },
+            {
+              id: 2,
+              name: "占城 (越南)",
+              coordinates: [109.1967, 13.7595], // 近歸仁
+              type: "stop",
+              event: "艦隊的中轉補給站，與當地進行友好的稻米與木材貿易。",
+              exchange: { out: ["青花瓷", "絲織品"], in: ["奇楠沉香", "象牙"] }
+            },
+            {
+              id: 3,
+              name: "舊港 (印尼巨港)",
+              coordinates: [104.7565, -2.9909],
+              type: "battle",
+              event: "在此遭遇海盜陳祖義。鄭和率軍剿滅海盜集團，穩定了東南亞航路的安全。",
+              exchange: { out: ["銅錢", "鐵器"], in: ["香料", "藥材"] }
+            },
+            {
+              id: 4,
+              name: "滿剌加 (馬來西亞)",
+              coordinates: [102.2405, 2.1896],
+              type: "hub",
+              event: "鄭和在此建立官廠（倉庫與中轉站），使之成為重要的國際貿易中心。",
+              exchange: { out: ["絲綢", "日用器皿"], in: ["錫", "胡椒", "燕窩"] }
+            },
+            {
+              id: 5,
+              name: "錫蘭 (斯里蘭卡)",
+              coordinates: [80.6337, 7.8731], // 近康提/加勒
+              type: "culture",
+              event: "曾向佛牙寺布施（立有《布施錫蘭山佛寺碑》），體現對宗教的尊重。",
+              exchange: { out: ["金銀供器", "織金緞"], in: ["紅寶石", "藍寶石", "珍珠"] }
+            },
+            {
+              id: 6,
+              name: "古里 (印度卡利卡特)",
+              coordinates: [75.7804, 11.2588],
+              type: "hub",
+              event: "印度洋上的貿易集散地，鄭和在此立碑紀念，強調雙方友好關係。",
+              exchange: { out: ["絲綢", "麝香"], in: ["棉布", "胡椒", "珊瑚"] }
+            },
+            {
+              id: 7,
+              name: "忽魯謨斯 (伊朗)",
+              coordinates: [56.4284, 27.1291],
+              type: "stop",
+              event: "波斯灣入口，東西方交流樞紐。艦隊在此接觸了伊斯蘭文明。",
+              exchange: { out: ["瓷器", "錦緞"], in: ["地毯", "大馬士革刀", "玉石"] }
+            },
+            {
+              id: 8,
+              name: "木骨都束 (肯亞/索馬利亞)",
+              coordinates: [45.3182, 2.0469], // 摩加迪沙附近
+              type: "rare",
+              event: "艦隊抵達的最遠區域之一。當地使節隨船回訪明朝。",
+              exchange: { out: ["絲綢", "瓷器"], in: ["長頸鹿(麒麟)", "斑馬", "獅子"] }
+            }
+          ];
+
+          // 主要航線點 (經緯度)
+          const routePoints = [
+            [118.7969, 32.0603], // 南京
+            [121.5, 25.0],       // 台灣海峽
+            [113.5, 22.2],       // 珠江口外
+            [109.2, 13.8],       // 占城
+            [104.8, 1.3],        // 新加坡海峽
+            [102.2, 2.2],        // 滿剌加
+            [95.3, 5.6],         // 蘇門答臘北端
+            [80.6, 7.9],         // 錫蘭
+            [75.8, 11.3],        // 古里
+            [65.0, 15.0],        // 阿拉伯海中部
+            [56.4, 27.1],        // 忽魯謨斯
+            [50.0, 15.0],        // 亞丁灣口
+            [45.3, 2.0]          // 木骨都束
+          ];
+
+          // 地圖投影設定
+          const width = 800;
+          const height = 450;
+          // 使用 Mercator 投影，聚焦於東南亞和印度洋
+          const projection = d3.geoMercator()
+            .center([85, 15]) // 中心點經緯度
+            .scale(250)       // 縮放級別
+            .translate([width / 2, height / 2]);
+
+          const pathGenerator = d3.geoPath().projection(projection);
+
+          // 生成航線路徑
+          const routePathData = d3.line()
+            .x(d => projection(d)[0])
+            .y(d => projection(d)[1])
+            .curve(d3.curveCatmullRom.alpha(0.5)) // 使用平滑曲線
+            (routePoints);
+
+
+          // 詳細影響數據
+          const impacts = [
+            {
+              id: 'trade',
+              title: "建立朝貢貿易體系",
+              short: "促進了亞非國家的經濟往來，建立了以明朝為中心的宗藩關係。",
+              icon: <Coins size={32} className="text-emerald-400" />,
+              color: "from-emerald-900 to-emerald-800",
+              borderColor: "border-emerald-700",
+              details: {
+                stats: [
+                  { label: "建立關係國家", val: "30+" },
+                  { label: "隨船使節", val: "數百人" }
+                ],
+                points: [
+                  "推行「厚往薄來」政策，雖經濟上明朝獲利有限，但政治上確立了宗主國地位。",
+                  "輸入了大量香料（胡椒、蘇木），甚至一度用胡椒代替薪俸發給官員。",
+                  "在滿剌加（馬六甲）建立官廠，打造了當時東南亞最大的國際貿易中轉站。"
+                ]
+              }
+            },
+            {
+              id: 'migration',
+              title: "南洋開發與華人移民",
+              short: "更多中國人知曉海外情況，促進了華人移居東南亞（南洋）。",
+              icon: <Users size={32} className="text-blue-400" />,
+              color: "from-blue-900 to-blue-800",
+              borderColor: "border-blue-700",
+              details: {
+                stats: [
+                  { label: "隨行人員", val: "2.7萬" },
+                  { label: "移民潮", val: "持續數百年" }
+                ],
+                points: [
+                  "鄭和多次在舊港（印尼巨港）等地停留，並設立機構，為後來華人移民奠定基礎。",
+                  "帶去了先進的農耕技術（如種稻）、建築技術與醫療知識。",
+                  "至今東南亞各地仍保留大量「三保公廟」，視鄭和為保護神。"
+                ]
+              }
+            },
+            {
+              id: 'culture',
+              title: "文化交流與航海科技",
+              short: "傳播了中華文化，留下了珍貴的航海資料與地圖。",
+              icon: <BookOpen size={32} className="text-purple-400" />,
+              color: "from-purple-900 to-purple-800",
+              borderColor: "border-purple-700",
+              details: {
+                stats: [
+                  { label: "航海圖", val: "1卷(僅存)" },
+                  { label: "著作", val: "多部" }
+                ],
+                points: [
+                  "《鄭和航海圖》是當時世界上最先進的航海圖，記錄了500多個地名。",
+                  "隨行人員馬歡著有《瀛涯勝覽》、費信著有《星槎勝覽》，詳細記錄了各國風土人情。",
+                  "帶回了「麒麟」（長頸鹿）等珍獸，豐富了國人的視野與對世界的認知。"
+                ]
+              }
+            }
+          ];
+
+          return (
+            <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-white">
+              {/* 頂部 Hero 區域 */}
+              <header className="relative w-full h-64 md:h-80 bg-gradient-to-r from-blue-950 to-slate-900 overflow-hidden flex flex-col items-center justify-center text-center px-4 shadow-xl border-b border-slate-800">
+                <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                <div className="z-10 animate-fade-in-up">
+                  <div className="flex items-center justify-center gap-3 mb-2 text-amber-500">
+                    <Ship size={32} />
+                    <span className="tracking-[0.3em] uppercase text-sm font-semibold">1405 - 1433</span>
+                  </div>
+                  <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-amber-200 to-amber-600 mb-4 drop-shadow-sm font-serif">
+                    鄭和下西洋
+                  </h1>
+                  <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+                    七次遠航，跨越重洋。<br className="hidden md:block"/>這是一場大明帝國與世界的壯麗對話。
+                  </p>
+                </div>
+              </header>
+
+              {/* 導航欄 */}
+              <nav className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 shadow-lg overflow-x-auto">
+                <div className="max-w-4xl mx-auto flex min-w-max md:min-w-0 justify-around md:justify-center md:gap-8 p-2">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-4 py-3 rounded-full transition-all duration-300 text-sm md:text-base whitespace-nowrap ${
+                        activeTab === tab.id
+                          ? 'bg-amber-600 text-white shadow-[0_0_15px_rgba(217,119,6,0.5)]'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      }`}
+                    >
+                      {tab.icon}
+                      <span>{tab.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </nav>
+
+              {/* 主要內容區 */}
+              <main className="max-w-6xl mx-auto p-4 md:p-8 min-h-[600px]">
+                
+                {/* 動機板塊 */}
+                {activeTab === 'reasons' && (
+                  <div className="grid md:grid-cols-3 gap-6 animate-fade-in">
+                    {reasons.map((item, idx) => (
+                      <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-amber-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            {item.icon}
+                        </div>
+                        <div className="mb-4 bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                          {item.icon}
+                        </div>
+                        <h3 className="text-xl font-bold text-amber-100 mb-3">{item.title}</h3>
+                        <p className="text-slate-400 leading-relaxed text-sm md:text-base">{item.desc}</p>
+                      </div>
+                    ))}
+                    <div className="md:col-span-3 mt-6 bg-blue-900/20 border border-blue-800/50 rounded-lg p-5 flex items-start gap-4">
+                       <Info className="text-blue-400 shrink-0 mt-1" />
+                       <p className="text-sm text-blue-200">
+                         <strong>教師提示：</strong> 這些動機並非單一存在，而是政治、經濟與軍事目的的綜合體現。請引導學生思考這與當時明朝「海禁」政策之間的矛盾與聯繫。
+                       </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 船隊介紹 */}
+                {activeTab === 'fleet' && (
+                  <div className="animate-fade-in space-y-8">
+                    <div className="grid grid-cols-3 gap-4">
+                      {fleetInfo.stats.map((stat, idx) => (
+                        <div key={idx} className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors">
+                          <div className="flex justify-center mb-2">{stat.icon}</div>
+                          <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
+                          <div className="text-xs text-slate-400 uppercase tracking-wider">{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-bold text-amber-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                          <Anchor size={20} /> 艦隊編制與分工
+                        </h3>
+                        <div className="grid gap-3">
+                          {fleetInfo.ships.map((ship, idx) => (
+                            <div key={idx} className="bg-slate-800 p-4 rounded-lg border-l-4 border-amber-600 hover:bg-slate-750 transition-colors">
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="font-bold text-lg text-white">{ship.name}</span>
+                                <span className="text-xs bg-slate-700 px-2 py-1 rounded text-amber-200">{ship.role}</span>
+                              </div>
+                              <div className="text-xs text-slate-400 mb-2 font-mono">{ship.size}</div>
+                              <p className="text-sm text-slate-300">{ship.desc}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-8">
+                        <div>
+                          <h3 className="text-xl font-bold text-blue-400 flex items-center gap-2 mb-4 border-b border-slate-800 pb-2">
+                            <Shield size={20} /> 黑科技：造船與導航
+                          </h3>
+                          <div className="grid gap-3">
+                            {fleetInfo.tech.map((t, idx) => (
+                              <div key={idx} className="bg-blue-900/20 border border-blue-800/50 p-4 rounded-lg">
+                                <h4 className="font-bold text-blue-200 mb-1">{t.title}</h4>
+                                <p className="text-sm text-slate-300">{t.desc}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-xl font-bold text-emerald-400 flex items-center gap-2 mb-4 border-b border-slate-800 pb-2">
+                            <Scale size={20} /> 歷史對比：鄭和 vs 哥倫布
+                          </h3>
+                          <div className="bg-slate-900 rounded-xl overflow-hidden border border-slate-700">
+                            <table className="w-full text-sm">
+                              <thead className="bg-slate-800 text-slate-400">
+                                <tr>
+                                  <th className="p-3 text-left">比較項目</th>
+                                  <th className="p-3 text-left text-amber-400">鄭和 (明朝)</th>
+                                  <th className="p-3 text-left text-slate-300">哥倫布 (西班牙)</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-800">
+                                {fleetInfo.comparison.map((row, idx) => (
+                                  <tr key={idx} className="hover:bg-slate-800/50">
+                                    <td className="p-3 font-medium text-slate-400">{row.label}</td>
+                                    <td className={`p-3 font-bold ${row.highlight ? 'text-amber-200' : 'text-slate-200'}`}>{row.zheng}</td>
+                                    <td className="p-3 text-slate-400">{row.west}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 地圖板塊 */}
+                {activeTab === 'map' && (
+                  <div className="animate-fade-in flex flex-col gap-6">
+                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 shadow-sm">
+                         <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                            <div>
+                                <h2 className="text-xl font-bold text-amber-400 mb-1 flex items-center gap-2">
+                                    <MapIcon className="text-amber-600" /> 鄭和下西洋路線圖
+                                </h2>
+                                <p className="text-sm text-slate-400">真實地理投影 | 點擊地圖圓點查看交流詳情</p>
+                            </div>
+                         </div>
+                         
+                        {/* 地圖容器 */}
+                        <div ref={mapRef} className="relative w-full aspect-[16/9] md:aspect-[2.2/1] bg-[#4299e1] rounded-xl overflow-hidden border-4 border-amber-600/50 shadow-inner group select-none">
+                        
+                        {/* SVG 地圖繪製 - 使用真實 GeoJSON 數據 */}
+                        {geoData ? (
+                          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
+                              <defs>
+                                   {/* 海洋波紋 */}
+                                   <pattern id="seaPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                                     <path d="M0 10 Q 5 5 10 10 T 20 10" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.5"/>
+                                   </pattern>
+                                   {/* 陸地陰影 */}
+                                   <filter id="landGlow">
+                                     <feDropShadow dx="1" dy="1" stdDeviation="1" floodColor="rgba(0,0,0,0.4)"/>
+                                   </filter>
+                              </defs>
+
+                              {/* 海洋背景 */}
+                              <rect width="100%" height="100%" fill="url(#seaPattern)" />
+
+                              {/* --- 陸地層 (金黃色 #fbbf24) --- */}
+                              <g filter="url(#landGlow)">
+                                {geoData.features.map((feature, i) => (
+                                  <path 
+                                    key={i}
+                                    d={pathGenerator(feature)}
+                                    fill="#fbbf24" 
+                                    stroke="#d97706" 
+                                    strokeWidth="0.5"
+                                  />
+                                ))}
+                              </g>
+                              
+                              {/* --- 航線 (深藍色粗線 #1e3a8a) --- */}
+                              <path 
+                                d={routePathData} 
+                                fill="none" 
+                                stroke="#1e3a8a" 
+                                strokeWidth="2" 
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeDasharray="4 2"
+                                className="animate-[dash_20s_linear_infinite]"
+                              />
+
+                              {/* --- 寶船圖示 (裝飾於底部中央) --- */}
+                              <g transform={`translate(${width/2}, ${height - 40}) scale(0.2)`}>
+                                 {/* 船身 */}
+                                 <path d="M10,40 Q50,60 90,40 L95,30 H5 L10,40 Z" fill="#3f2e18" stroke="#1a120b" strokeWidth="1"/>
+                                 {/* 桅杆 */}
+                                 <rect x="25" y="5" width="4" height="30" fill="#5D4037" />
+                                 <rect x="50" y="2" width="5" height="35" fill="#5D4037" />
+                                 <rect x="75" y="8" width="4" height="25" fill="#5D4037" />
+                                 {/* 帆 (紅褐色) */}
+                                 <path d="M25,10 H45 L45,30 H25 Z" fill="#A0522D" opacity="0.9" stroke="#5D4037" />
+                                 <path d="M50,5 H75 L75,30 H50 Z" fill="#A0522D" opacity="0.9" stroke="#5D4037" />
+                                 <path d="M75,12 H90 L90,30 H75 Z" fill="#A0522D" opacity="0.9" stroke="#5D4037" />
+                              </g>
+                          </svg>
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-slate-300">
+                            <Compass className="animate-spin mr-2"/> 正在載入真實地形數據...
+                          </div>
+                        )}
+
+                        {/* 互動點位 - 根據投影計算位置 */}
+                        {geoData && locations.map((loc) => {
+                            const [x, y] = projection(loc.coordinates);
+                            // 將 d3 計算出的像素座標轉換為父容器的百分比，以適應響應式縮放
+                            const left = (x / width) * 100;
+                            const top = (y / height) * 100;
+
+                            return (
+                            <button
+                            key={loc.id}
+                            onClick={() => setSelectedLocation(loc)}
+                            className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 rounded-full border-2 transition-all duration-300 z-10 
+                                ${selectedLocation?.id === loc.id 
+                                ? 'bg-amber-500 border-white scale-150 shadow-[0_0_15px_rgba(245,158,11,1)]' 
+                                : 'bg-white border-blue-900 hover:scale-125 hover:bg-amber-200'}`}
+                            style={{ left: `${left}%`, top: `${top}%` }}
+                            >
+                                <span className={`absolute top-4 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm transition-all
+                                    ${selectedLocation?.id === loc.id 
+                                        ? 'bg-amber-500 text-white z-20 scale-110' 
+                                        : 'text-slate-900 bg-white/90 backdrop-blur-sm'}`}>
+                                    {loc.name.split(' ')[0]}
+                                </span>
+                            </button>
+                        )})}
+
+                        </div>
+
+                        {/* 下方詳細資訊卡 */}
+                        {selectedLocation ? (
+                            <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 shadow-lg animate-fade-in-up flex flex-col md:flex-row gap-6 mt-4">
+                                <div className="flex-1">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <h3 className="text-2xl font-bold text-amber-400">{selectedLocation.name}</h3>
+                                        <button onClick={() => setSelectedLocation(null)} className="md:hidden text-slate-400">
+                                            <X size={24} />
+                                        </button>
+                                    </div>
+                                    <div className="flex items-start gap-3 mb-4 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                        <Milestone className="text-amber-500 shrink-0 mt-1" size={20} />
+                                        <div>
+                                            <h4 className="font-bold text-slate-300 text-sm mb-1">歷史事件</h4>
+                                            <p className="text-slate-400 text-sm leading-relaxed">{selectedLocation.event}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
+                                    <h4 className="font-bold text-slate-300 text-sm mb-3 flex items-center gap-2">
+                                        <Package className="text-blue-400" size={18} /> 貿易與交流
+                                    </h4>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-gradient-to-br from-red-900/30 to-slate-900 p-3 rounded-lg border border-red-900/50">
+                                            <span className="text-xs font-bold text-red-400 block mb-2 border-b border-red-900/30 pb-1">中國輸出</span>
+                                            <div className="flex flex-wrap gap-1">
+                                                {selectedLocation.exchange.out.map(i => (
+                                                    <span key={i} className="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">{i}</span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="bg-gradient-to-br from-emerald-900/30 to-slate-900 p-3 rounded-lg border border-emerald-900/50">
+                                            <span className="text-xs font-bold text-emerald-400 block mb-2 border-b border-emerald-900/30 pb-1">帶回中國</span>
+                                            <div className="flex flex-wrap gap-1">
+                                                {selectedLocation.exchange.in.map(i => (
+                                                    <span key={i} className="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">{i}</span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="bg-slate-900 border border-slate-800 border-dashed rounded-xl p-6 text-center text-slate-500 mt-4 flex items-center justify-center gap-3">
+                                <MapIcon className="animate-bounce" />
+                                <p>請點擊上方地圖中的白色圓點，探索鄭和船隊的足跡與貿易往來</p>
+                            </div>
+                        )}
+                    </div>
+                  </div>
+                )}
+
+                {/* 影響板塊 */}
+                {activeTab === 'impact' && (
+                  <div className="space-y-6 animate-fade-in">
+                     <div className="text-center mb-6">
+                       <h2 className="text-2xl font-bold text-amber-100 mb-2">七下西洋的深遠影響</h2>
+                       <p className="text-slate-400">點擊下方卡片，查看詳細歷史數據與解說</p>
+                     </div>
+
+                     <div className="grid md:grid-cols-3 gap-6">
+                       {impacts.map((item) => (
+                         <div 
+                            key={item.id} 
+                            onClick={() => setSelectedImpact(selectedImpact === item.id ? null : item.id)}
+                            className={`cursor-pointer rounded-xl overflow-hidden border transition-all duration-300 shadow-lg 
+                              ${selectedImpact === item.id 
+                                ? `bg-slate-900 ${item.borderColor} ring-2 ring-amber-500/50 scale-105 z-10` 
+                                : `bg-slate-900 border-slate-700 hover:border-slate-500 hover:-translate-y-1`
+                              }`}
+                         >
+                           {/* 卡片頭部 */}
+                           <div className={`p-6 bg-gradient-to-br ${item.color} relative`}>
+                              <div className="flex justify-between items-start">
+                                <div className="bg-slate-900/30 p-3 rounded-full backdrop-blur-sm text-white">
+                                  {item.icon}
+                                </div>
+                                {selectedImpact === item.id && <ChevronRight className="text-white rotate-90 transition-transform" />}
+                              </div>
+                              <h3 className="text-xl font-bold text-white mt-4 mb-2">{item.title}</h3>
+                              <p className="text-white/80 text-sm leading-relaxed">{item.short}</p>
+                           </div>
+                           
+                           {/* 展開詳情 */}
+                           <div className={`overflow-hidden transition-all duration-500 ease-in-out ${selectedImpact === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                              <div className="p-6 border-t border-slate-700 space-y-4">
+                                {/* 數據列 */}
+                                <div className="flex gap-4 mb-4">
+                                  {item.details.stats.map((stat, i) => (
+                                    <div key={i} className="flex-1 bg-slate-800 p-3 rounded text-center border border-slate-700">
+                                      <div className="text-lg font-bold text-amber-400">{stat.val}</div>
+                                      <div className="text-xs text-slate-500">{stat.label}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                                {/* 條列解說 */}
+                                <ul className="space-y-2">
+                                  {item.details.points.map((pt, i) => (
+                                    <li key={i} className="flex gap-2 text-sm text-slate-300">
+                                      <span className="text-amber-500 mt-1">•</span>
+                                      <span>{pt}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                           </div>
+                         </div>
+                       ))}
+                     </div>
+
+                     <div className="mt-8 bg-slate-900 border border-amber-900/30 p-6 rounded-xl flex flex-col md:flex-row items-center gap-6 shadow-lg">
+                       <div className="shrink-0 bg-amber-900/20 p-4 rounded-full border border-amber-700/30">
+                         <Landmark size={32} className="text-amber-500" />
+                       </div>
+                       <div>
+                         <h4 className="font-bold text-amber-200 mb-1 text-lg">歷史的轉折點</h4>
+                         <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                           鄭和下西洋是中國古代航海事業的頂峰。然而，1433年最後一次航行結束後，明朝因財政壓力與北部邊患轉向「海禁」。這次壯舉雖然在當時建立了龐大的朝貢體系，卻未像後來的地理大發現那樣帶來持續的殖民擴張或商業革命，留給後人無限的歷史沉思。
+                         </p>
+                       </div>
+                     </div>
+                  </div>
+                )}
+              </main>
+
+              {/* 底部 */}
+              <footer className="mt-12 py-8 bg-slate-950 border-t border-slate-900 text-center">
+                <p className="text-slate-600 text-sm">© 歷史教學互動模組 | Designed for History Education</p>
+              </footer>
+            </div>
+          );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<ZhengHeApp />);
+    </script>
+</body>
+</html>
