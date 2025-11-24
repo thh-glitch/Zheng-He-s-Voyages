@@ -38,7 +38,7 @@
             width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #475569;
+            background-color: #cbd5e1; /* 淺色模式滾動條 */
             border-radius: 4px;
         }
         
@@ -61,7 +61,7 @@
         }
     </script>
 </head>
-<body class="bg-slate-950 text-slate-100">
+<body class="bg-slate-50 text-slate-800">
 
     <div id="root"></div>
 
@@ -81,7 +81,6 @@
 
           // 加載真實地理數據 (GeoJSON)
           useEffect(() => {
-            // 使用一個簡化的世界地圖 GeoJSON，聚焦於亞非區域
             d3.json('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
               .then(data => {
                 setGeoData(data);
@@ -102,26 +101,26 @@
             {
               title: "宣揚國威",
               desc: "明朝初年國力強盛，成祖朱棣希望通過展示強大的海軍力量，讓海外諸國臣服，建立「萬國來朝」的盛世局面。",
-              icon: <Anchor className="text-blue-400" size={32} />
+              icon: <Anchor className="text-blue-600" size={32} />
             },
             {
               title: "發展貿易",
               desc: "推行朝貢貿易，用中國的絲綢、瓷器換取海外的香料、寶石與奇珍異獸，滿足宮廷與貴族需求，並活躍經濟。",
-              icon: <Package className="text-amber-400" size={32} />
+              icon: <Package className="text-amber-600" size={32} />
             },
             {
               title: "尋找建文帝",
               desc: "靖難之變後，建文帝下落不明。有傳言他流亡海外，鄭和此行亦有秘密尋訪其下落的政治目的。",
-              icon: <Info className="text-red-400" size={32} />
+              icon: <Info className="text-red-600" size={32} />
             }
           ];
 
           // 船隊數據
           const fleetInfo = {
             stats: [
-              { label: "船隻總數", value: "240+", unit: "艘", icon: <Ship className="text-amber-400" /> },
-              { label: "隨行人員", value: "27,800", unit: "人", icon: <Users className="text-blue-400" /> },
-              { label: "航行里程", value: "10萬+", unit: "里", icon: <Compass className="text-emerald-400" /> },
+              { label: "船隻總數", value: "240+", unit: "艘", icon: <Ship className="text-amber-600" /> },
+              { label: "隨行人員", value: "27,800", unit: "人", icon: <Users className="text-blue-600" /> },
+              { label: "航行里程", value: "10萬+", unit: "里", icon: <Compass className="text-emerald-600" /> },
             ],
             ships: [
               { name: "寶船 (旗艦)", role: "指揮帥船", size: "長44丈(約130m)，九桅十二帆", desc: "艦隊核心，極盡奢華，儲存賞賜用的寶物與詔書。" },
@@ -252,9 +251,9 @@
               id: 'trade',
               title: "建立朝貢貿易體系",
               short: "促進了亞非國家的經濟往來，建立了以明朝為中心的宗藩關係。",
-              icon: <Coins size={32} className="text-emerald-400" />,
-              color: "from-emerald-900 to-emerald-800",
-              borderColor: "border-emerald-700",
+              icon: <Coins size={32} className="text-emerald-600" />,
+              color: "from-emerald-200 to-emerald-100",
+              borderColor: "border-emerald-300",
               details: {
                 stats: [
                   { label: "建立關係國家", val: "30+" },
@@ -271,9 +270,9 @@
               id: 'migration',
               title: "南洋開發與華人移民",
               short: "更多中國人知曉海外情況，促進了華人移居東南亞（南洋）。",
-              icon: <Users size={32} className="text-blue-400" />,
-              color: "from-blue-900 to-blue-800",
-              borderColor: "border-blue-700",
+              icon: <Users size={32} className="text-blue-600" />,
+              color: "from-blue-200 to-blue-100",
+              borderColor: "border-blue-300",
               details: {
                 stats: [
                   { label: "隨行人員", val: "2.7萬" },
@@ -290,9 +289,9 @@
               id: 'culture',
               title: "文化交流與航海科技",
               short: "傳播了中華文化，留下了珍貴的航海資料與地圖。",
-              icon: <BookOpen size={32} className="text-purple-400" />,
-              color: "from-purple-900 to-purple-800",
-              borderColor: "border-purple-700",
+              icon: <BookOpen size={32} className="text-purple-600" />,
+              color: "from-purple-200 to-purple-100",
+              borderColor: "border-purple-300",
               details: {
                 stats: [
                   { label: "航海圖", val: "1卷(僅存)" },
@@ -308,26 +307,26 @@
           ];
 
           return (
-            <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-white">
+            <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-amber-200 selection:text-amber-900">
               {/* 頂部 Hero 區域 */}
-              <header className="relative w-full h-64 md:h-80 bg-gradient-to-r from-blue-950 to-slate-900 overflow-hidden flex flex-col items-center justify-center text-center px-4 shadow-xl border-b border-slate-800">
+              <header className="relative w-full h-64 md:h-80 bg-gradient-to-r from-slate-100 to-slate-200 overflow-hidden flex flex-col items-center justify-center text-center px-4 shadow-sm border-b border-slate-200">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <div className="z-10 animate-fade-in-up">
-                  <div className="flex items-center justify-center gap-3 mb-2 text-amber-500">
+                  <div className="flex items-center justify-center gap-3 mb-2 text-amber-600">
                     <Ship size={32} />
                     <span className="tracking-[0.3em] uppercase text-sm font-semibold">1405 - 1433</span>
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-amber-200 to-amber-600 mb-4 drop-shadow-sm font-serif">
+                  <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-amber-600 to-amber-800 mb-4 drop-shadow-sm font-serif">
                     鄭和下西洋
                   </h1>
-                  <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+                  <p className="text-slate-600 max-w-2xl mx-auto text-sm md:text-base leading-relaxed font-medium">
                     七次遠航，跨越重洋。<br className="hidden md:block"/>這是一場大明帝國與世界的壯麗對話。
                   </p>
                 </div>
               </header>
 
               {/* 導航欄 */}
-              <nav className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 shadow-lg overflow-x-auto">
+              <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm overflow-x-auto">
                 <div className="max-w-4xl mx-auto flex min-w-max md:min-w-0 justify-around md:justify-center md:gap-8 p-2">
                   {tabs.map((tab) => (
                     <button
@@ -335,8 +334,8 @@
                       onClick={() => setActiveTab(tab.id)}
                       className={`flex items-center gap-2 px-4 py-3 rounded-full transition-all duration-300 text-sm md:text-base whitespace-nowrap ${
                         activeTab === tab.id
-                          ? 'bg-amber-600 text-white shadow-[0_0_15px_rgba(217,119,6,0.5)]'
-                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                          ? 'bg-amber-600 text-white shadow-md'
+                          : 'text-slate-600 hover:text-amber-700 hover:bg-slate-100'
                       }`}
                     >
                       {tab.icon}
@@ -353,20 +352,20 @@
                 {activeTab === 'reasons' && (
                   <div className="grid md:grid-cols-3 gap-6 animate-fade-in">
                     {reasons.map((item, idx) => (
-                      <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-amber-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-6 hover:border-amber-400 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                             {item.icon}
                         </div>
-                        <div className="mb-4 bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+                        <div className="mb-4 bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
                           {item.icon}
                         </div>
-                        <h3 className="text-xl font-bold text-amber-100 mb-3">{item.title}</h3>
-                        <p className="text-slate-400 leading-relaxed text-sm md:text-base">{item.desc}</p>
+                        <h3 className="text-xl font-bold text-amber-800 mb-3">{item.title}</h3>
+                        <p className="text-slate-600 leading-relaxed text-sm md:text-base">{item.desc}</p>
                       </div>
                     ))}
-                    <div className="md:col-span-3 mt-6 bg-blue-900/20 border border-blue-800/50 rounded-lg p-5 flex items-start gap-4">
-                       <Info className="text-blue-400 shrink-0 mt-1" />
-                       <p className="text-sm text-blue-200">
+                    <div className="md:col-span-3 mt-6 bg-blue-50 border border-blue-200 rounded-lg p-5 flex items-start gap-4">
+                       <Info className="text-blue-600 shrink-0 mt-1" />
+                       <p className="text-sm text-blue-800">
                          <strong>教師提示：</strong> 這些動機並非單一存在，而是政治、經濟與軍事目的的綜合體現。請引導學生思考這與當時明朝「海禁」政策之間的矛盾與聯繫。
                        </p>
                     </div>
@@ -378,28 +377,28 @@
                   <div className="animate-fade-in space-y-8">
                     <div className="grid grid-cols-3 gap-4">
                       {fleetInfo.stats.map((stat, idx) => (
-                        <div key={idx} className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors">
+                        <div key={idx} className="bg-white border border-slate-200 rounded-xl p-4 text-center hover:shadow-md transition-shadow">
                           <div className="flex justify-center mb-2">{stat.icon}</div>
-                          <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
-                          <div className="text-xs text-slate-400 uppercase tracking-wider">{stat.label}</div>
+                          <div className="text-2xl md:text-3xl font-bold text-slate-800 mb-1">{stat.value}</div>
+                          <div className="text-xs text-slate-500 uppercase tracking-wider">{stat.label}</div>
                         </div>
                       ))}
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-8">
                       <div className="space-y-4">
-                        <h3 className="text-xl font-bold text-amber-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <h3 className="text-xl font-bold text-amber-700 flex items-center gap-2 border-b border-slate-200 pb-2">
                           <Anchor size={20} /> 艦隊編制與分工
                         </h3>
                         <div className="grid gap-3">
                           {fleetInfo.ships.map((ship, idx) => (
-                            <div key={idx} className="bg-slate-800 p-4 rounded-lg border-l-4 border-amber-600 hover:bg-slate-750 transition-colors">
+                            <div key={idx} className="bg-white p-4 rounded-lg border-l-4 border-amber-500 shadow-sm hover:shadow-md transition-shadow">
                               <div className="flex justify-between items-center mb-1">
-                                <span className="font-bold text-lg text-white">{ship.name}</span>
-                                <span className="text-xs bg-slate-700 px-2 py-1 rounded text-amber-200">{ship.role}</span>
+                                <span className="font-bold text-lg text-slate-800">{ship.name}</span>
+                                <span className="text-xs bg-slate-100 px-2 py-1 rounded text-amber-800 font-semibold">{ship.role}</span>
                               </div>
-                              <div className="text-xs text-slate-400 mb-2 font-mono">{ship.size}</div>
-                              <p className="text-sm text-slate-300">{ship.desc}</p>
+                              <div className="text-xs text-slate-500 mb-2 font-mono">{ship.size}</div>
+                              <p className="text-sm text-slate-600">{ship.desc}</p>
                             </div>
                           ))}
                         </div>
@@ -407,38 +406,38 @@
 
                       <div className="space-y-8">
                         <div>
-                          <h3 className="text-xl font-bold text-blue-400 flex items-center gap-2 mb-4 border-b border-slate-800 pb-2">
+                          <h3 className="text-xl font-bold text-blue-700 flex items-center gap-2 mb-4 border-b border-slate-200 pb-2">
                             <Shield size={20} /> 黑科技：造船與導航
                           </h3>
                           <div className="grid gap-3">
                             {fleetInfo.tech.map((t, idx) => (
-                              <div key={idx} className="bg-blue-900/20 border border-blue-800/50 p-4 rounded-lg">
-                                <h4 className="font-bold text-blue-200 mb-1">{t.title}</h4>
-                                <p className="text-sm text-slate-300">{t.desc}</p>
+                              <div key={idx} className="bg-blue-50 border border-blue-100 p-4 rounded-lg">
+                                <h4 className="font-bold text-blue-800 mb-1">{t.title}</h4>
+                                <p className="text-sm text-slate-700">{t.desc}</p>
                               </div>
                             ))}
                           </div>
                         </div>
 
                         <div>
-                          <h3 className="text-xl font-bold text-emerald-400 flex items-center gap-2 mb-4 border-b border-slate-800 pb-2">
+                          <h3 className="text-xl font-bold text-emerald-700 flex items-center gap-2 mb-4 border-b border-slate-200 pb-2">
                             <Scale size={20} /> 歷史對比：鄭和 vs 哥倫布
                           </h3>
-                          <div className="bg-slate-900 rounded-xl overflow-hidden border border-slate-700">
+                          <div className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                             <table className="w-full text-sm">
-                              <thead className="bg-slate-800 text-slate-400">
+                              <thead className="bg-slate-100 text-slate-600">
                                 <tr>
                                   <th className="p-3 text-left">比較項目</th>
-                                  <th className="p-3 text-left text-amber-400">鄭和 (明朝)</th>
-                                  <th className="p-3 text-left text-slate-300">哥倫布 (西班牙)</th>
+                                  <th className="p-3 text-left text-amber-700">鄭和 (明朝)</th>
+                                  <th className="p-3 text-left text-slate-500">哥倫布 (西班牙)</th>
                                 </tr>
                               </thead>
-                              <tbody className="divide-y divide-slate-800">
+                              <tbody className="divide-y divide-slate-100">
                                 {fleetInfo.comparison.map((row, idx) => (
-                                  <tr key={idx} className="hover:bg-slate-800/50">
-                                    <td className="p-3 font-medium text-slate-400">{row.label}</td>
-                                    <td className={`p-3 font-bold ${row.highlight ? 'text-amber-200' : 'text-slate-200'}`}>{row.zheng}</td>
-                                    <td className="p-3 text-slate-400">{row.west}</td>
+                                  <tr key={idx} className="hover:bg-slate-50">
+                                    <td className="p-3 font-medium text-slate-600">{row.label}</td>
+                                    <td className={`p-3 font-bold ${row.highlight ? 'text-amber-700' : 'text-slate-700'}`}>{row.zheng}</td>
+                                    <td className="p-3 text-slate-500">{row.west}</td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -453,30 +452,30 @@
                 {/* 地圖板塊 */}
                 {activeTab === 'map' && (
                   <div className="animate-fade-in flex flex-col gap-6">
-                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 shadow-sm">
+                    <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                          <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
                             <div>
-                                <h2 className="text-xl font-bold text-amber-400 mb-1 flex items-center gap-2">
+                                <h2 className="text-xl font-bold text-amber-700 mb-1 flex items-center gap-2">
                                     <MapIcon className="text-amber-600" /> 鄭和下西洋路線圖
                                 </h2>
-                                <p className="text-sm text-slate-400">真實地理投影 | 點擊地圖圓點查看交流詳情</p>
+                                <p className="text-sm text-slate-500">真實地理投影 | 點擊地圖圓點查看交流詳情</p>
                             </div>
                          </div>
                          
-                        {/* 地圖容器 */}
-                        <div ref={mapRef} className="relative w-full aspect-[16/9] md:aspect-[2.2/1] bg-[#4299e1] rounded-xl overflow-hidden border-4 border-amber-600/50 shadow-inner group select-none">
+                        {/* 地圖容器 - 改為較亮的海洋顏色 */}
+                        <div ref={mapRef} className="relative w-full aspect-[16/9] md:aspect-[2.2/1] bg-[#93c5fd] rounded-xl overflow-hidden border-4 border-amber-200 shadow-inner group select-none">
                         
-                        {/* SVG 地圖繪製 - 使用真實 GeoJSON 數據 */}
+                        {/* SVG 地圖繪製 */}
                         {geoData ? (
                           <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet">
                               <defs>
                                    {/* 海洋波紋 */}
                                    <pattern id="seaPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-                                     <path d="M0 10 Q 5 5 10 10 T 20 10" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.5"/>
+                                     <path d="M0 10 Q 5 5 10 10 T 20 10" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5"/>
                                    </pattern>
                                    {/* 陸地陰影 */}
                                    <filter id="landGlow">
-                                     <feDropShadow dx="1" dy="1" stdDeviation="1" floodColor="rgba(0,0,0,0.4)"/>
+                                     <feDropShadow dx="1" dy="1" stdDeviation="1" floodColor="rgba(0,0,0,0.2)"/>
                                    </filter>
                               </defs>
 
@@ -523,7 +522,7 @@
                               </g>
                           </svg>
                         ) : (
-                          <div className="absolute inset-0 flex items-center justify-center text-slate-300">
+                          <div className="absolute inset-0 flex items-center justify-center text-slate-600">
                             <Compass className="animate-spin mr-2"/> 正在載入真實地形數據...
                           </div>
                         )}
@@ -531,7 +530,6 @@
                         {/* 互動點位 - 根據投影計算位置 */}
                         {geoData && locations.map((loc) => {
                             const [x, y] = projection(loc.coordinates);
-                            // 將 d3 計算出的像素座標轉換為父容器的百分比，以適應響應式縮放
                             const left = (x / width) * 100;
                             const top = (y / height) * 100;
 
@@ -541,14 +539,14 @@
                             onClick={() => setSelectedLocation(loc)}
                             className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 rounded-full border-2 transition-all duration-300 z-10 
                                 ${selectedLocation?.id === loc.id 
-                                ? 'bg-amber-500 border-white scale-150 shadow-[0_0_15px_rgba(245,158,11,1)]' 
-                                : 'bg-white border-blue-900 hover:scale-125 hover:bg-amber-200'}`}
+                                ? 'bg-amber-500 border-white scale-150 shadow-[0_0_15px_rgba(245,158,11,0.6)]' 
+                                : 'bg-white border-blue-600 hover:scale-125 hover:bg-amber-100'}`}
                             style={{ left: `${left}%`, top: `${top}%` }}
                             >
                                 <span className={`absolute top-4 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm transition-all
                                     ${selectedLocation?.id === loc.id 
-                                        ? 'bg-amber-500 text-white z-20 scale-110' 
-                                        : 'text-slate-900 bg-white/90 backdrop-blur-sm'}`}>
+                                        ? 'bg-amber-600 text-white z-20 scale-110' 
+                                        : 'text-slate-800 bg-white/90 backdrop-blur-sm shadow'}`}>
                                     {loc.name.split(' ')[0]}
                                 </span>
                             </button>
@@ -558,41 +556,41 @@
 
                         {/* 下方詳細資訊卡 */}
                         {selectedLocation ? (
-                            <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 shadow-lg animate-fade-in-up flex flex-col md:flex-row gap-6 mt-4">
+                            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-lg animate-fade-in-up flex flex-col md:flex-row gap-6 mt-4">
                                 <div className="flex-1">
                                     <div className="flex justify-between items-center mb-3">
-                                        <h3 className="text-2xl font-bold text-amber-400">{selectedLocation.name}</h3>
+                                        <h3 className="text-2xl font-bold text-amber-700">{selectedLocation.name}</h3>
                                         <button onClick={() => setSelectedLocation(null)} className="md:hidden text-slate-400">
                                             <X size={24} />
                                         </button>
                                     </div>
-                                    <div className="flex items-start gap-3 mb-4 bg-slate-800 p-3 rounded-lg border border-slate-700">
-                                        <Milestone className="text-amber-500 shrink-0 mt-1" size={20} />
+                                    <div className="flex items-start gap-3 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                        <Milestone className="text-amber-600 shrink-0 mt-1" size={20} />
                                         <div>
-                                            <h4 className="font-bold text-slate-300 text-sm mb-1">歷史事件</h4>
-                                            <p className="text-slate-400 text-sm leading-relaxed">{selectedLocation.event}</p>
+                                            <h4 className="font-bold text-slate-700 text-sm mb-1">歷史事件</h4>
+                                            <p className="text-slate-600 text-sm leading-relaxed">{selectedLocation.event}</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex-1 border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
-                                    <h4 className="font-bold text-slate-300 text-sm mb-3 flex items-center gap-2">
-                                        <Package className="text-blue-400" size={18} /> 貿易與交流
+                                <div className="flex-1 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6">
+                                    <h4 className="font-bold text-slate-700 text-sm mb-3 flex items-center gap-2">
+                                        <Package className="text-blue-600" size={18} /> 貿易與交流
                                     </h4>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-gradient-to-br from-red-900/30 to-slate-900 p-3 rounded-lg border border-red-900/50">
-                                            <span className="text-xs font-bold text-red-400 block mb-2 border-b border-red-900/30 pb-1">中國輸出</span>
+                                        <div className="bg-red-50 p-3 rounded-lg border border-red-100">
+                                            <span className="text-xs font-bold text-red-600 block mb-2 border-b border-red-200 pb-1">中國輸出</span>
                                             <div className="flex flex-wrap gap-1">
                                                 {selectedLocation.exchange.out.map(i => (
-                                                    <span key={i} className="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">{i}</span>
+                                                    <span key={i} className="text-xs bg-white text-slate-600 px-2 py-1 rounded border border-slate-200">{i}</span>
                                                 ))}
                                             </div>
                                         </div>
-                                        <div className="bg-gradient-to-br from-emerald-900/30 to-slate-900 p-3 rounded-lg border border-emerald-900/50">
-                                            <span className="text-xs font-bold text-emerald-400 block mb-2 border-b border-emerald-900/30 pb-1">帶回中國</span>
+                                        <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                                            <span className="text-xs font-bold text-emerald-600 block mb-2 border-b border-emerald-200 pb-1">帶回中國</span>
                                             <div className="flex flex-wrap gap-1">
                                                 {selectedLocation.exchange.in.map(i => (
-                                                    <span key={i} className="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">{i}</span>
+                                                    <span key={i} className="text-xs bg-white text-slate-600 px-2 py-1 rounded border border-slate-200">{i}</span>
                                                 ))}
                                             </div>
                                         </div>
@@ -600,7 +598,7 @@
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-slate-900 border border-slate-800 border-dashed rounded-xl p-6 text-center text-slate-500 mt-4 flex items-center justify-center gap-3">
+                            <div className="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-6 text-center text-slate-500 mt-4 flex items-center justify-center gap-3">
                                 <MapIcon className="animate-bounce" />
                                 <p>請點擊上方地圖中的白色圓點，探索鄭和船隊的足跡與貿易往來</p>
                             </div>
@@ -613,8 +611,8 @@
                 {activeTab === 'impact' && (
                   <div className="space-y-6 animate-fade-in">
                      <div className="text-center mb-6">
-                       <h2 className="text-2xl font-bold text-amber-100 mb-2">七下西洋的深遠影響</h2>
-                       <p className="text-slate-400">點擊下方卡片，查看詳細歷史數據與解說</p>
+                       <h2 className="text-2xl font-bold text-amber-700 mb-2">七下西洋的深遠影響</h2>
+                       <p className="text-slate-500">點擊下方卡片，查看詳細歷史數據與解說</p>
                      </div>
 
                      <div className="grid md:grid-cols-3 gap-6">
@@ -624,30 +622,30 @@
                             onClick={() => setSelectedImpact(selectedImpact === item.id ? null : item.id)}
                             className={`cursor-pointer rounded-xl overflow-hidden border transition-all duration-300 shadow-lg 
                               ${selectedImpact === item.id 
-                                ? `bg-slate-900 ${item.borderColor} ring-2 ring-amber-500/50 scale-105 z-10` 
-                                : `bg-slate-900 border-slate-700 hover:border-slate-500 hover:-translate-y-1`
+                                ? `bg-white ${item.borderColor} ring-2 ring-amber-400 scale-105 z-10` 
+                                : `bg-white border-slate-200 hover:border-slate-300 hover:-translate-y-1`
                               }`}
                          >
                            {/* 卡片頭部 */}
                            <div className={`p-6 bg-gradient-to-br ${item.color} relative`}>
                               <div className="flex justify-between items-start">
-                                <div className="bg-slate-900/30 p-3 rounded-full backdrop-blur-sm text-white">
+                                <div className="bg-white/40 p-3 rounded-full backdrop-blur-sm text-slate-800">
                                   {item.icon}
                                 </div>
-                                {selectedImpact === item.id && <ChevronRight className="text-white rotate-90 transition-transform" />}
+                                {selectedImpact === item.id && <ChevronRight className="text-slate-800 rotate-90 transition-transform" />}
                               </div>
-                              <h3 className="text-xl font-bold text-white mt-4 mb-2">{item.title}</h3>
-                              <p className="text-white/80 text-sm leading-relaxed">{item.short}</p>
+                              <h3 className="text-xl font-bold text-slate-800 mt-4 mb-2">{item.title}</h3>
+                              <p className="text-slate-700 text-sm leading-relaxed">{item.short}</p>
                            </div>
                            
                            {/* 展開詳情 */}
                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${selectedImpact === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                              <div className="p-6 border-t border-slate-700 space-y-4">
+                              <div className="p-6 border-t border-slate-100 space-y-4">
                                 {/* 數據列 */}
                                 <div className="flex gap-4 mb-4">
                                   {item.details.stats.map((stat, i) => (
-                                    <div key={i} className="flex-1 bg-slate-800 p-3 rounded text-center border border-slate-700">
-                                      <div className="text-lg font-bold text-amber-400">{stat.val}</div>
+                                    <div key={i} className="flex-1 bg-slate-50 p-3 rounded text-center border border-slate-100">
+                                      <div className="text-lg font-bold text-amber-600">{stat.val}</div>
                                       <div className="text-xs text-slate-500">{stat.label}</div>
                                     </div>
                                   ))}
@@ -655,7 +653,7 @@
                                 {/* 條列解說 */}
                                 <ul className="space-y-2">
                                   {item.details.points.map((pt, i) => (
-                                    <li key={i} className="flex gap-2 text-sm text-slate-300">
+                                    <li key={i} className="flex gap-2 text-sm text-slate-600">
                                       <span className="text-amber-500 mt-1">•</span>
                                       <span>{pt}</span>
                                     </li>
@@ -667,13 +665,13 @@
                        ))}
                      </div>
 
-                     <div className="mt-8 bg-slate-900 border border-amber-900/30 p-6 rounded-xl flex flex-col md:flex-row items-center gap-6 shadow-lg">
-                       <div className="shrink-0 bg-amber-900/20 p-4 rounded-full border border-amber-700/30">
-                         <Landmark size={32} className="text-amber-500" />
+                     <div className="mt-8 bg-white border border-amber-200 p-6 rounded-xl flex flex-col md:flex-row items-center gap-6 shadow-md">
+                       <div className="shrink-0 bg-amber-50 p-4 rounded-full border border-amber-100">
+                         <Landmark size={32} className="text-amber-600" />
                        </div>
                        <div>
-                         <h4 className="font-bold text-amber-200 mb-1 text-lg">歷史的轉折點</h4>
-                         <p className="text-slate-400 leading-relaxed text-sm md:text-base">
+                         <h4 className="font-bold text-amber-800 mb-1 text-lg">歷史的轉折點</h4>
+                         <p className="text-slate-600 leading-relaxed text-sm md:text-base">
                            鄭和下西洋是中國古代航海事業的頂峰。然而，1433年最後一次航行結束後，明朝因財政壓力與北部邊患轉向「海禁」。這次壯舉雖然在當時建立了龐大的朝貢體系，卻未像後來的地理大發現那樣帶來持續的殖民擴張或商業革命，留給後人無限的歷史沉思。
                          </p>
                        </div>
@@ -683,8 +681,8 @@
               </main>
 
               {/* 底部 */}
-              <footer className="mt-12 py-8 bg-slate-950 border-t border-slate-900 text-center">
-                <p className="text-slate-600 text-sm">© 歷史教學互動模組 | Designed for History Education</p>
+              <footer className="mt-12 py-8 bg-slate-100 border-t border-slate-200 text-center">
+                <p className="text-slate-500 text-sm">© 歷史教學互動模組 | Designed for History Education</p>
               </footer>
             </div>
           );
